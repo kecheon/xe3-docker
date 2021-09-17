@@ -12,3 +12,5 @@ xpressengine v3 도커라이징 레시피이다.
      cp ./xpressengine/files/entrypoint.sh html/.
      
  마지막으로 docker-compose up -d --build 하면 된다.
+ 
+ ps. 누군가 따뜻한 마음의 소유자가 있다면 사전 작업절차를 하지 않아도 되는 도커파일을 만들어서 PR해 주면 좋겠다.
