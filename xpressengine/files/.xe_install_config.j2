@@ -1,0 +1,19 @@
+---
+site:
+    url: {{ site_url | default('http://xe.innog2b.com') }}
+    timezone: {{ site_timezone | default('Asia/Seoul') }}
+    locale: {{ site_locale | default('ko') }}
+admin:
+    email: {{ admin_email | default('admin@localhost.local') }}
+    password: {{ admin_password | default('admin') }}
+    display_name: {{ admin_display_name | default('dmdcjs0') }}
+database:
+    driver: {{ database_driver | default('mysql') }}
+    host: {{ database_host | default('mariadb_db') }}
+    port: {{ database_port | default(3306) }}
+    dbname: {{ database_dbname | default('xe') }}
+    username: {{ database_username | default('admin') }}
+    password: {{ database_password | default('dmdcjs0') }}
+    prefix: {{ database_prefix | default('xe') }}
+    charset: {{ database_charset | default('utf8') }}
+

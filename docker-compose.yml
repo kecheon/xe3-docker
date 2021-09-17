@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+    trader_mariadb_xe:
+        image: mariadb
+        environment:
+          MYSQL_ROOT_PASSWORD: top_secret
+          MYSQL_DATABASE: xe
+          MYSQL_USER: root
+          MYSQL_PASSWORD: top_secret
+        volumes:
+           - ./db_data:/var/lib/mysql
+        restart: unless-stopped
+        ulimits:
+                nproc: 65535
+                nofile:
+                        soft: 26677
+                        hard: 46677
+    trader_xe3:
+        depends_on:
+          - trader_mariadb_xe
+        build:
+          context: ./
+          dockerfile: ./xpressengine/Dockerfile
+          args:
+                  USER_ID: 1000
+                  GROUP_ID: 1000
+        restart: unless-stopped
+        environment:
+          VIRTUAL_HOST: trader.coins88.org
+          LETSENCRYPT_HOST: trader.coins88.org # Enviroment variables needed for Let's Encrypt companion
+          LETSENCRYPT_EMAIL: kecheon@gmail.com
+
+          XE_INSTALL_DATABASE_HOST: trader_mariadb_xe
+          XE_INSTALL_SITE_URL: https://trader.coins88.org
+          XE_INSTALL_SITE_LOCALE: ko
+          XE_INSTALL_ADMIN_EMAIL: kecheon@gmail.com
+          XE_INSTALL_ADMIN_PASSWORD: top_secret
+          XE_INSTALL_ADMIN_DISPLAY_NAME: admin
+          XE_INSTALL_DATABASE_PORT: 3306
+          XE_INSTALL_DATABASE_PREFIX: xe
+          XE_INSTALL_DATABASE_DBNAME: xe
+          XE_INSTALL_DATABASE_USERNAME: root
+          XE_INSTALL_DATABASE_PASSWORD: top_secret
+          XE_INSTALL_DATABASE_CHARSET: utf8
+          XE_INSTALL_SITE_TIMEZONE: Asia/Seoul
+          XE_INSTALL_DATABASE_DRIVER: mysql
+          XE_COMPOSER_HOME_DIRECTORY: /usr/local/bin
+
+        expose:
+           - "80"
+           - "443"
+
+        user: "1000:1000"
+        volumes:
+          - ./apache_dir.conf:/etc/apache2/mods-enabled/dir.conf
+          - ./apache2.conf:/etc/apache2/apache2.conf
+          - ./html:/var/www/html
+          - ./log:/var/log/apache2
+
+        ulimits:
+                nproc: 65535
+                nofile:
+                        soft: 26677
+                        hard: 46677
+
+networks:
+    default:
+        external:
+            name: nginx-proxy
